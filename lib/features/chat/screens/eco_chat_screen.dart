@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:projet_mobile/l10n/generated/app_localizations.dart';
 import '../../../core/theme/eco_theme.dart';
@@ -72,22 +73,123 @@ class _EcoChatScreenState extends State<EcoChatScreen> {
   }
 
   String _getBotResponse(String input) {
+    final languageCode = Localizations.localeOf(context).languageCode;
+    final isArabic = languageCode == 'ar';
     final lowerInput = input.toLowerCase();
-    
-    // Simple keyword matching for demo purposes
-    if (lowerInput.contains('plastic') || lowerInput.contains('plastique') || lowerInput.contains('بلاستيك')) {
-      return "Plastic takes hundreds of years to decompose. Try using reusable bags and bottles!";
-    } else if (lowerInput.contains('water') || lowerInput.contains('eau') || lowerInput.contains('ماء')) {
-      return "Conserving water is crucial. Turn off the tap while brushing your teeth to save liters of water.";
-    } else if (lowerInput.contains('tree') || lowerInput.contains('arbre') || lowerInput.contains('شجرة')) {
-      return "Trees absorb CO2 and release oxygen. Planting a tree is one of the best things you can do!";
-    } else if (lowerInput.contains('energy') || lowerInput.contains('energie') || lowerInput.contains('طاقة')) {
-      return "Switching to LED bulbs and turning off lights when not needed helps save energy.";
-    } else if (lowerInput.contains('hello') || lowerInput.contains('hi') || lowerInput.contains('مرحبا')) {
-      return "Hello there! Ready to save the planet?";
-    }
+    final random = Random();
 
-    return "That's an interesting topic! Remember, every small action counts towards a greener future.";
+    // Data for English responses
+    final Map<String, List<String>> englishResponses = {
+      'plastic': [
+        "Plastic takes 450+ years to decompose. Use reusable bags!",
+        "Did you know 91% of plastic isn't recycled? Reduce usage where possible.",
+        "Avoid single-use plastics like straws and cutlery to save marine life."
+      ],
+      'water': [
+        "Turn off the tap while brushing to save ~6 liters/minute!",
+        "Fix leaky faucets. A drip can waste 10,000+ liters a year.",
+        "Take shorter showers to save both water and the energy used to heat it."
+      ],
+      'tree': [
+        "A single mature tree can release enough oxygen for two people.",
+        "Trees cool the streets and break up urban heat islands.",
+        "Planting a tree is a long-term investment in the planet's health."
+      ],
+      'energy': [
+        "Switch to LED bulbs; they use 75% less energy than incandescent ones.",
+        "Unplug electronics when not in use to stop 'vampire' energy drain.",
+        "Wash clothes in cold water to save significant heating energy."
+      ],
+      'recycle': [
+        "Rinse your recyclables! Food residue can ruin a whole batch.",
+        "Check local guidelines. Not all plastics are recyclable everywhere.",
+        "Recycling aluminum saves 95% of the energy needed to make new aluminum."
+      ],
+      'food': [
+        "Eat more plant-based meals to lower your carbon footprint.",
+        "Reduce food waste by composting scraps.",
+        "Buy local to reduce emission from food transportation."
+      ],
+      'hello': [
+        "Hello there! Ready to be an Eco Hero today?",
+        "Hi! How can I help you live more sustainably?",
+        "Greetings! Let's talk about saving the planet."
+      ]
+    };
+
+    final List<String> englishDefaults = [
+      "That's interesting! Every small eco-step counts.",
+      "Could you tell me more? I love learning about eco-habits.",
+      "Remember, simple acts like turning off lights make a difference!",
+      "I'm still learning, but I'd love to discuss nature or recycling.",
+      "Did you know changing your diet can help the climate too?"
+    ];
+
+    // Data for Arabic responses
+    final Map<String, List<String>> arabicResponses = {
+      'بلاستيك': [
+        "يستغرق البلاستيك أكثر من 450 عاماً ليتحلل. استخدم أكياس قابلة لإعادة الاستخدام!",
+        "هل تعلم أن 91٪ من البلاستيك لا يتم إعادة تدويره؟ قلل استهلاكك.",
+        "تجنب المواد البلاستيكية ذات الاستخدام الواحد مثل المصاصات لحماية الحياة البحرية."
+      ],
+      'ماء': [
+        "أغلق الصنبور أثناء تنظيف أسنانك لتوفير حوالي 6 لترات في الدقيقة!",
+        "أصلح الصنابير المسربة. التنقيط يمكن أن يهدر آلاف اللترات سنوياً.",
+        "خذ حماماً أقصر لتوفير المياه والطاقة المستخدمة لتسخينها."
+      ],
+      'شجرة': [
+        "يمكن لشجرة ناضجة واحدة إنتاج ما يكفي من الأكسجين لشخصين.",
+        "الأشجار تبرد الشوارع وتقلل من حرارة المدن.",
+        "زراعة شجرة هو استثمار طويل الأجل في صحة كوكبنا."
+      ],
+      'طاقة': [
+        "استبدل المصابيح بـ LED؛ فهي تستهلك طاقة أقل بنسبة 75٪.",
+        "افصل الأجهزة الإلكترونية عند عدم استخدامها لوقف هدر الطاقة.",
+        "اغسل الملابس بالماء البارد لتوفير طاقة التسخين."
+      ],
+      'تدوير': [
+        "اشطف المواد القابلة لإعادة التدوير! بقايا الطعام يمكن أن تفسد الدفعة بكملها.",
+        "تحقق من القواعد المحلية. ليس كل البلاستيك قابل للتدوير في كل مكان.",
+        "إعادة تدوير الألومنيوم يوفر 95٪ من الطاقة اللازمة لصنع ألومنيوم جديد."
+      ],
+      'طعام': [
+        "تناول وجبات نباتية أكثر لتقليل بصمتك الكربونية.",
+        "قلل من هدر الطعام عن طريق تحويل البقايا إلى سماد.",
+        "اشتري محلياً لتقليل انبعاثات نقل الغذاء."
+      ],
+      'مرحبا': [
+        "مرحباً بك! هل أنت مستعد لتكون بطلاً للبيئة اليوم؟",
+        "أهلاً! كيف يمكنني مساعدتك لتعيش حياة أكثر استدامة؟",
+        "تحياتي! دعنا نتحدث عن حماية الكوكب."
+      ]
+    };
+
+    final List<String> arabicDefaults = [
+      "هذا مثير للاهتمام! كل خطوة بيئية صغيرة تحدث فرقاً.",
+      "هل يمكنك إخباري بالمزيد؟ أحب تعلم عادات بيئية جديدة.",
+      "تذكر، أفعال بسيطة مثل إطفاء الأنوار تصنع فرقاً!",
+      "ما زلت أتعلم، لكني أحب مناقشة الطبيعة أو إعادة التدوير.",
+      "هل تعلم أن تغيير نظامك الغذائي يمكن أن يساعد المناخ أيضاً؟"
+    ];
+
+    
+    final responsesMap = isArabic ? arabicResponses : englishResponses;
+    final defaults = isArabic ? arabicDefaults : englishDefaults;
+
+    for (var entry in responsesMap.entries) {
+      // Check if input matches keyword (simple contains check)
+      // Note: For Arabic 'contains' might be tricky with variations, but keeping it simple as requested.
+      if (lowerInput.contains(entry.key.toLowerCase())) {
+         return entry.value[random.nextInt(entry.value.length)];
+      }
+    }
+    
+    // Also check mapped counterparts if identifying mixed language or exact translations is needed,
+    // but for now relying on current locale is safest.
+    // If we want to support 'plastic' input while in Arabic mode, we could enable cross-checking.
+    // For now, adhere to the active locale to determine the response language.
+
+    return defaults[random.nextInt(defaults.length)];
   }
 
   @override

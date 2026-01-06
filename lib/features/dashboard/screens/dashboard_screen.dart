@@ -8,6 +8,10 @@ import '../../games/eco_hero/eco_hero_screen.dart';
 import '../../games/climate_combat/climate_combat_screen.dart';
 import '../../games/city_challenge/city_challenge_screen.dart';
 
+
+import '../../games/water_cleanup/water_cleanup_screen.dart';
+
+
 import 'settings_screen.dart';
 import '../../chat/screens/eco_chat_screen.dart';
 
@@ -150,6 +154,18 @@ class DashboardScreen extends StatelessWidget {
                 color: Colors.orange,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CityChallengeGameScreen())),
               ),
+              const SizedBox(height: 12),
+              
+              // New Levels
+
+               _GameCard(
+                title: "Water Cleanup",
+                description: "Clean the ocean and save wildlife!",
+                icon: Icons.water_drop,
+                color: Colors.blueAccent,
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WaterCleanupScreen())),
+              ),
+
             ],
           ),
         ),

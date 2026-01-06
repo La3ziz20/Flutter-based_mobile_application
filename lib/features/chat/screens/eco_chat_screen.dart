@@ -14,12 +14,14 @@ class _EcoChatScreenState extends State<EcoChatScreen> {
   final List<ChatMessage> _messages = [];
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  
+  // Simulated AI Logic
+  final _SimulatedEcoBot _bot = _SimulatedEcoBot();
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_messages.isEmpty) {
-      // Add initial greeting
       _addBotMessage(AppLocalizations.of(context)!.botGreeting);
     }
   }
@@ -30,10 +32,12 @@ class _EcoChatScreenState extends State<EcoChatScreen> {
     _controller.clear();
     _addUserMessage(text);
 
-    // Simulate thinking delay
-    Future.delayed(const Duration(seconds: 1), () {
+    // Simulate "thinking" time for realism
+    Future.delayed(const Duration(milliseconds: 1200), () {
       if (mounted) {
-        _addBotMessage(_getBotResponse(text));
+        final languageCode = Localizations.localeOf(context).languageCode;
+        final response = _bot.getResponse(text, languageCode);
+        _addBotMessage(response);
       }
     });
   }
@@ -70,126 +74,6 @@ class _EcoChatScreenState extends State<EcoChatScreen> {
         );
       }
     });
-  }
-
-  String _getBotResponse(String input) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    final isArabic = languageCode == 'ar';
-    final lowerInput = input.toLowerCase();
-    final random = Random();
-
-    // Data for English responses
-    final Map<String, List<String>> englishResponses = {
-      'plastic': [
-        "Plastic takes 450+ years to decompose. Use reusable bags!",
-        "Did you know 91% of plastic isn't recycled? Reduce usage where possible.",
-        "Avoid single-use plastics like straws and cutlery to save marine life."
-      ],
-      'water': [
-        "Turn off the tap while brushing to save ~6 liters/minute!",
-        "Fix leaky faucets. A drip can waste 10,000+ liters a year.",
-        "Take shorter showers to save both water and the energy used to heat it."
-      ],
-      'tree': [
-        "A single mature tree can release enough oxygen for two people.",
-        "Trees cool the streets and break up urban heat islands.",
-        "Planting a tree is a long-term investment in the planet's health."
-      ],
-      'energy': [
-        "Switch to LED bulbs; they use 75% less energy than incandescent ones.",
-        "Unplug electronics when not in use to stop 'vampire' energy drain.",
-        "Wash clothes in cold water to save significant heating energy."
-      ],
-      'recycle': [
-        "Rinse your recyclables! Food residue can ruin a whole batch.",
-        "Check local guidelines. Not all plastics are recyclable everywhere.",
-        "Recycling aluminum saves 95% of the energy needed to make new aluminum."
-      ],
-      'food': [
-        "Eat more plant-based meals to lower your carbon footprint.",
-        "Reduce food waste by composting scraps.",
-        "Buy local to reduce emission from food transportation."
-      ],
-      'hello': [
-        "Hello there! Ready to be an Eco Hero today?",
-        "Hi! How can I help you live more sustainably?",
-        "Greetings! Let's talk about saving the planet."
-      ]
-    };
-
-    final List<String> englishDefaults = [
-      "That's interesting! Every small eco-step counts.",
-      "Could you tell me more? I love learning about eco-habits.",
-      "Remember, simple acts like turning off lights make a difference!",
-      "I'm still learning, but I'd love to discuss nature or recycling.",
-      "Did you know changing your diet can help the climate too?"
-    ];
-
-    // Data for Arabic responses
-    final Map<String, List<String>> arabicResponses = {
-      'بلاستيك': [
-        "يستغرق البلاستيك أكثر من 450 عاماً ليتحلل. استخدم أكياس قابلة لإعادة الاستخدام!",
-        "هل تعلم أن 91٪ من البلاستيك لا يتم إعادة تدويره؟ قلل استهلاكك.",
-        "تجنب المواد البلاستيكية ذات الاستخدام الواحد مثل المصاصات لحماية الحياة البحرية."
-      ],
-      'ماء': [
-        "أغلق الصنبور أثناء تنظيف أسنانك لتوفير حوالي 6 لترات في الدقيقة!",
-        "أصلح الصنابير المسربة. التنقيط يمكن أن يهدر آلاف اللترات سنوياً.",
-        "خذ حماماً أقصر لتوفير المياه والطاقة المستخدمة لتسخينها."
-      ],
-      'شجرة': [
-        "يمكن لشجرة ناضجة واحدة إنتاج ما يكفي من الأكسجين لشخصين.",
-        "الأشجار تبرد الشوارع وتقلل من حرارة المدن.",
-        "زراعة شجرة هو استثمار طويل الأجل في صحة كوكبنا."
-      ],
-      'طاقة': [
-        "استبدل المصابيح بـ LED؛ فهي تستهلك طاقة أقل بنسبة 75٪.",
-        "افصل الأجهزة الإلكترونية عند عدم استخدامها لوقف هدر الطاقة.",
-        "اغسل الملابس بالماء البارد لتوفير طاقة التسخين."
-      ],
-      'تدوير': [
-        "اشطف المواد القابلة لإعادة التدوير! بقايا الطعام يمكن أن تفسد الدفعة بكملها.",
-        "تحقق من القواعد المحلية. ليس كل البلاستيك قابل للتدوير في كل مكان.",
-        "إعادة تدوير الألومنيوم يوفر 95٪ من الطاقة اللازمة لصنع ألومنيوم جديد."
-      ],
-      'طعام': [
-        "تناول وجبات نباتية أكثر لتقليل بصمتك الكربونية.",
-        "قلل من هدر الطعام عن طريق تحويل البقايا إلى سماد.",
-        "اشتري محلياً لتقليل انبعاثات نقل الغذاء."
-      ],
-      'مرحبا': [
-        "مرحباً بك! هل أنت مستعد لتكون بطلاً للبيئة اليوم؟",
-        "أهلاً! كيف يمكنني مساعدتك لتعيش حياة أكثر استدامة؟",
-        "تحياتي! دعنا نتحدث عن حماية الكوكب."
-      ]
-    };
-
-    final List<String> arabicDefaults = [
-      "هذا مثير للاهتمام! كل خطوة بيئية صغيرة تحدث فرقاً.",
-      "هل يمكنك إخباري بالمزيد؟ أحب تعلم عادات بيئية جديدة.",
-      "تذكر، أفعال بسيطة مثل إطفاء الأنوار تصنع فرقاً!",
-      "ما زلت أتعلم، لكني أحب مناقشة الطبيعة أو إعادة التدوير.",
-      "هل تعلم أن تغيير نظامك الغذائي يمكن أن يساعد المناخ أيضاً؟"
-    ];
-
-    
-    final responsesMap = isArabic ? arabicResponses : englishResponses;
-    final defaults = isArabic ? arabicDefaults : englishDefaults;
-
-    for (var entry in responsesMap.entries) {
-      // Check if input matches keyword (simple contains check)
-      // Note: For Arabic 'contains' might be tricky with variations, but keeping it simple as requested.
-      if (lowerInput.contains(entry.key.toLowerCase())) {
-         return entry.value[random.nextInt(entry.value.length)];
-      }
-    }
-    
-    // Also check mapped counterparts if identifying mixed language or exact translations is needed,
-    // but for now relying on current locale is safest.
-    // If we want to support 'plastic' input while in Arabic mode, we could enable cross-checking.
-    // For now, adhere to the active locale to determine the response language.
-
-    return defaults[random.nextInt(defaults.length)];
   }
 
   @override
@@ -326,5 +210,126 @@ class ChatMessage extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+// -----------------------------------------------------------------------------
+// SIMULATED AI ENGINE
+// -----------------------------------------------------------------------------
+class _SimulatedEcoBot {
+  final Random _random = Random();
+
+  String getResponse(String input, String languageCode) {
+    final isArabic = languageCode == 'ar';
+    final normalizedInput = input.toLowerCase().trim();
+
+    // 1. GREETINGS & SMALL TALK
+    if (_matches(normalizedInput, ['hello', 'hi', 'hey', 'greetings', 'hola'], ['مرحبا', 'أهلا', 'هلا', 'سلام'])) {
+      return isArabic 
+        ? "أهلاً بك يا صديق البيئة! كيف يمكنني مساعدتك في حماية كوكبنا اليوم؟"
+        : "Hello, Eco-Warrior! How can I help you save our planet today?";
+    }
+    
+    if (_matches(normalizedInput, ['how are you', 'how r u'], ['كيف حالك', 'شلونك'])) {
+      return isArabic
+        ? "أنا مجرد ذكاء اصطناعي، لكني أشعر بانتعاش كلما قام أحد بإعادة التدوير! ماذا عنك؟"
+        : "I'm just code, but I feel refreshed every time someone recycles! How are you?";
+    }
+
+    if (_matches(normalizedInput, ['who are you', 'what are you'], ['من انت', 'ما انت', 'عرف نفسك'])) {
+      return isArabic
+        ? "أنا مساعدك البيئي الذكي! موجود هنا لأجيب عن أسئلتك حول المناخ، التدوير، وكيفية العيش باستدامة."
+        : "I am your smart Eco-Assistant! I'm here to answer questions about climate, recycling, and sustainable living.";
+    }
+
+    // 2. SPECIFIC TOPICS (Expanded Knowledge Base)
+    
+    // PLASTIC
+    if (_matches(normalizedInput, ['plastic', 'bottle', 'bag'], ['بلاستيك', 'قنينة', 'كيس'])) {
+      final facts = isArabic ? [
+        "البلاستيك يحتاج 450 سنة ليتحلل! جرب استخدام قارورة مياه معدنية قابلة لإعادة التعبئة.",
+        "هل تعلم؟ معظم فرش الأسنان البلاستيكية التي صنعت لازالت موجودة حتى اليوم. فكر في البدائل!",
+        "إعادة تدوير قنينة بلاستيكية واحدة يوفر طاقة تكفي لتشغيل مصباح لمدة 6 ساعات."
+      ] : [
+        "Plastic takes 450 years to decompose! Try carrying a reusable water bottle.",
+        "Fun fact: Recycling one plastic bottle saves enough energy to power a lightbulb for 6 hours.",
+        "Did you know? Microplastics are now found even in the deepest oceans. Reducing usage is better than recycling."
+      ];
+      return facts[_random.nextInt(facts.length)];
+    }
+
+    // WATER
+    if (_matches(normalizedInput, ['water', 'drink', 'shower', 'bath'], ['ماء', 'مياه', 'شرب', 'دوش', 'حمام'])) {
+      return isArabic
+        ? "الماء نعمة! هل تعلم أن تقليص وقت الاستحمام بدقيقة واحدة يوفر مئات اللترات شهريًا؟"
+        : "Water is precious! Did you know cutting your shower time by just 1 minute saves hundreds of liters a month?";
+    }
+
+    // CLIMATE CHANGE
+    if (_matches(normalizedInput, ['climate', 'change', 'global warming', 'heat'], ['مناخ', 'تغير', 'احتباس', 'حرارة'])) {
+       return isArabic
+        ? "التغير المناخي حقيقي، لكن الأمل موجود. استخدام الطاقة النظيفة وتقليل الهدر هما مفتاح الحل."
+        : "Climate change is the biggest challenge of our time. But every solar panel and planted tree helps fight it!";
+    }
+
+    // RECYCLING (General)
+    if (_matches(normalizedInput, ['recycle', 'recycling', 'bin', 'sort'], ['تدوير', 'اعادة', 'فرز', 'قمامة'])) {
+      return isArabic
+        ? "التدوير فن! تأكد دائماً من غسل العبوات قبل رميها في حاوية إعادة التدوير لضمان جودتها."
+        : "Recycling is an art! Always make sure to rinse your containers before binning them to avoid contamination.";
+    }
+
+    // TREES / NATURE
+    if (_matches(normalizedInput, ['tree', 'forest', 'plant', 'nature'], ['شجرة', 'غابة', 'نبات', 'طبيعة'])) {
+      return isArabic
+        ? "الأشجار هي رئة الأرض. زراعة شجرة واحدة تمتص حوالي 22 كيلوغراماً من ثاني أكسيد الكربون سنوياً!"
+        : "Trees are the Earth's lungs. Planting just one tree absorbs about 22kg of CO2 per year!";
+    }
+
+    // ENERGY
+    if (_matches(normalizedInput, ['energy', 'electric', 'light', 'solar'], ['طاقة', 'كهرباء', 'ضوء', 'شمس'])) {
+      return isArabic
+        ? "أطفئ الأنوار عند مغادرة الغرفة! هذا الفعل البسيط يوفر الطاقة ويقلل فاتورتك."
+        : "Turn off the lights when you leave a room! It's the simplest way to save energy and money.";
+    }
+
+     // FOOD
+    if (_matches(normalizedInput, ['food', 'eat', 'meat', 'vegan'], ['طعام', 'أكل', 'لحم', 'خضار'])) {
+      return isArabic
+        ? "حاول تقليل هدر الطعام. بقايا الطعام في المكبات تنتج غاز الميثان الضار جداً."
+        : "Try to reduce food waste. Rotting food in landfills produces methane, a potent greenhouse gas.";
+    }
+
+    // 3. FALLBACK / "SMART" DEFAULT
+    // If no specific keyword is found, return a generic but relevant eco-tip or encouraging remark.
+    if (isArabic) {
+      final defaults = [
+        "سؤال جيد! بشكل عام، كلما قللنا استهلاكنا، كلما ساعدنا الكوكب أكثر.",
+        "لست متأكداً تماماً، ولكن تذكر القاعدة الذهبية: قلل، أعد الاستخدام، ثم أعد التدوير.",
+        "همم.. هذا موضوع عميق. لكن المؤكد أن الطبيعة تحتاجنا جميعاً.",
+        "هل يمكنك صياغة ذلك بطريقة أخرى؟ أنا أتعلم كل يوم لأصبح مساعداً أفضل!",
+        "البيئة تتأثر بكل قرار نتخذه. شكراً لاهتمامك!"
+      ];
+      return defaults[_random.nextInt(defaults.length)];
+    } else {
+      final defaults = [
+        "That's a great point! Generally, the less we consume, the more we help the planet.",
+        "I'm not 100% sure on that specific detail, but remember the Golden Rule: Reduce, Reuse, Recycle.",
+        "Hmm, interesting topic. Nature relies on us to make conscious choices every day.",
+        "Could you rephrase that? I'm still learning to be the best Eco-Bot I can be!",
+        "Every decision acts as a vote for the kind of world we want to live in. Thanks for caring!"
+      ];
+      return defaults[_random.nextInt(defaults.length)];
+    }
+  }
+
+  bool _matches(String input, List<String> eng, List<String> ara) {
+    for (var w in eng) {
+      if (input.contains(w)) return true;
+    }
+    for (var w in ara) {
+      if (input.contains(w)) return true;
+    }
+    return false;
   }
 }

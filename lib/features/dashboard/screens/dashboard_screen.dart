@@ -159,8 +159,8 @@ class DashboardScreen extends StatelessWidget {
               // New Levels
 
                _GameCard(
-                title: "Water Cleanup",
-                description: "Clean the ocean and save wildlife!",
+                title: l10n.waterCleanupTitle,
+                description: l10n.waterCleanupDesc,
                 icon: Icons.water_drop,
                 color: Colors.blueAccent,
                 onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const WaterCleanupScreen())),

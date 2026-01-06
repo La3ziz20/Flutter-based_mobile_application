@@ -5,17 +5,20 @@ A Flutter-based mobile application designed to raise awareness about environment
 ## 🚀 Features
 
 ### 🎮 Educational Games
-Engage in three distinct mini-games built with the **Flame** engine to learn about environmental protection:
-- **Climate Combat:** Fight against pollution and climate change threats.
-- **City Challenge:** Manage a city's resources and keep it green.
-- **Eco Hero:** Complete daily tasks and challenges to become an environmental hero.
+Engage in distinct mini-games built with the **Flame** engine to learn about environmental protection:
+- **Level 1: City Challenge:** Sort trash into correct bins (Plastic, Paper, Glass, Metal) to keep the city clean.
+- **Level 2: Climate Combat:** Fight pollution clouds to protect the atmosphere.
+- **Level 3: Eco Hero:** Complete daily environmental tasks.
+- **Level 4: Water Cleanup:** Navigate a boat to clean up the ocean, collect trash, and save wildlife!
 
 ### 📊 Dashboard & Progress
 - Track your scores and progress across different games.
 - View your impact and achievements.
 
-### 💬 Eco Chat
-- Interactive chat feature to discuss environmental topics or get tips on sustainable living.
+### 💬 Smart Eco Chat
+- **Simulated AI Chatbot:** Talk to a smart, bilingual (English/Arabic) bot.
+- **No API Key Required:** Runs 100% locally on your device.
+- **Knowledgeable:** Ask about recycling, climate change, energy tips, and more!
 
 ### 🔐 Multi-Language Support
 - Fully localized in **English** and **Arabic** (العربية).
